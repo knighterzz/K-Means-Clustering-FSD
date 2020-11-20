@@ -1,0 +1,42 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r}
+data <- read.csv("./Wholesale-customers-data.csv")
+head(data)
+```
+
+```{r}
+summary(data)
+```
+```{r}
+data.new <- data[, 2:8]
+data.class <- data[, "Region"]
+set.seed(1356)
+result <- kmeans(data.new, 3) 
+```
+```{r}
+par(mfrow=c(3,3), mar=c(5,4,2,2))
+plot(data.new[, c(2,3)], col=result$cluster)
+plot(data.new[, c(2,3)], col=data.class)
+plot(data.new[, c(4,5)], col=result$cluster)
+plot(data.new[, c(4,5)], col=data.class)
+plot(data.new[, c(6,7)], col=result$cluster)
+plot(data.new[, c(6,7)], col=data.class)
+```
+```{r}
+data.new$cluster <- factor(result$cluster)
+centers <- as.data.frame(result$centers)
+```
+
+```{r}
+library(ggplot2)
+ggplot() + 
+  geom_point(data=data.new, aes(x=Fresh, y=Milk,color=cluster))  +
+  geom_point(data=centers, aes(x=Fresh, y=Milk, color="Center"),size=52, alpha=.2, show.legend = FALSE)
+```
+
